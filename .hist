@@ -82,3 +82,79 @@ docker run --network mysql -e JDBC=jdbc:mysql://mysql:3306/database -e DB_USER=u
 
 git commit -sam "FIPS without TLS"
 
+git push
+
+
+
+git checkout -b fips-tls
+
+docker ps
+
+docker ps | grep mysql
+
+docker exec -itu0 fe2 bash
+
+
+
+vi my.cnf
+
+openssl req -x509 -newkey rsa:4096 -keyout ca.key -out ca.crt -days 365 -subj "/CN=myca"  -nodes -addext keyUsage=critical,digitalSignature,keyCertSign
+
+
+
+openssl req -new -nodes -out mysql.csr -newkey rsa:4096 -keyout mysql.key -subj '/CN=mysqls'
+
+openssl x509 -req -in mysql.csr -CA ca.crt -CAkey ca.key -out mysql.crt -days 365
+
+
+
+docker run --network mysql 
+-e MYSQL_USER=user 
+-e MYSQL_PASSWORD=password 
+-e MYSQL_DATABASE=database 
+-e MYSQL_ALLOW_EMPTY_PASSWORD=1 
+-p 3306:3306 --name mysqls --rm -d 
+-v $PWD/my.cnf:/etc/my.cnf 
+-v $PWD:/certs 
+cgr.dev/chainguard-private/mysql
+
+docker run --network mysql 
+-e MYSQL_USER=user 
+-e MYSQL_PASSWORD=password 
+-e MYSQL_DATABASE=database 
+-e MYSQL_ALLOW_EMPTY_PASSWORD=1 
+--name mysqls --rm -d 
+-v $PWD/my.cnf:/etc/my.cnf 
+-v $PWD:/certs 
+cgr.dev/chainguard-private/mysql
+
+
+
+docker logs 5cf
+
+
+
+docker run --network mysql -e JDBC=jdbc:mysql://mysqls:3306/database -e DB_USER=user -e DB_PASSWORD=password myfips
+
+docker logs mysqls
+
+docker run --network mysql -e JDBC=jdbc:mysql://mysqls:3306/database&useSSL=true&verifyServerCertificate=false -e DB_USER=user -e DB_PASSWORD=password myfips
+
+docker run --network mysql -e 'JDBC=jdbc:mysql://mysqls:3306/database&useSSL=true&verifyServerCertificate=false' -e DB_USER=user -e DB_PASSWORD=password myfips
+
+docker run --network mysql -e 'JDBC=jdbc:mysql://mysqls:3306/database?useSSL=true&verifyServerCertificate=false' -e DB_USER=user -e DB_PASSWORD=password myfips
+
+docker run --network mysql -e 'JDBC=jdbc:mysql://mysqls:3306/database?useSSL=false&verifyServerCertificate=false' -e DB_USER=user -e DB_PASSWORD=password myfips
+
+docker run --network mysql -e 'JDBC=jdbc:mysql://mysqls:3306/database?useSSL=true&verifyServerCertificate=tru' -e DB_USER=user -e DB_PASSWORD=password myfips
+
+docker run --network mysql -e 'JDBC=jdbc:mysql://mysqls:3306/database?useSSL=true&verifyServerCertificate=true' -e DB_USER=user -e DB_PASSWORD=password myfips
+
+
+
+git add my.cnf
+
+git status
+
+git commit -sam "A TLS mysql server example"
+
