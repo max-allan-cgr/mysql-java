@@ -1,3 +1,4 @@
+```
 docker build -t mys .
 
 docker network create mysql
@@ -7,4 +8,6 @@ docker run --network mysql -e JDBC=jdbc:mysql://mysql:3306/database -e DB_USER=u
 
 Successfully connected to the database!
 Query result: 1
+
+```
 
