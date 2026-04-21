@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard-private/jdk:openjdk-17-dev
+FROM cgr.dev/chainguard-private/jdk-fips:openjdk-17-dev
 USER root
 RUN apk add maven
 

@@ -64,3 +64,21 @@ vi README.md
 
 git commit -sam "Fix readme"
 
+git push
+
+
+
+
+
+git checkout -b "fips"
+
+vi Dockerfile
+
+docker build -t myfips .
+
+docker run --network mysql -e JDBC=jdbc:mysql://mysql:3306/database -e DB_USER=user -e DB_PASSWORD=password myfips
+
+
+
+git commit -sam "FIPS without TLS"
+
