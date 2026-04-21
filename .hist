@@ -158,3 +158,11 @@ git status
 
 git commit -sam "A TLS mysql server example"
 
+git push
+
+
+
+vi README.md
+
+git commit -sam "Typo"
+

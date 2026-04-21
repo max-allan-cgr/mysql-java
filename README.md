@@ -51,7 +51,7 @@ Successfully connected to the database!
 Query result: 1
 ```
 
-Or try to NOT use SSL or not validate the server cert (it is self signed)
+Or try to NOT use SSL or to validate the server cert (it is self signed)
 ```
 docker run --network mysql -e 'JDBC=jdbc:mysql://mysqls:3306/database?useSSL=false&verifyServerCertificate=false' -e DB_USER=user -e DB_PASSWORD=password myfips
 NOTE: Picked up JDK_JAVA_OPTIONS: --add-exports=java.base/sun.security.internal.spec=ALL-UNNAMED --add-exports=java.base/sun.security.provider=ALL-UNNAMED -Djavax.net.ssl.trustStoreType=FIPS
